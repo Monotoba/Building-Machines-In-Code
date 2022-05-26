@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """ Tiny-P CPU Simulator.
 Tiny-P is a simple CPU Simulator intended as a teaching aid for students
-learning to about computer architecture.
+learning about computer architecture.
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation, either version 2 of the License, or (at your option) any later
