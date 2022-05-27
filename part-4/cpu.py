@@ -264,7 +264,7 @@ class CPU:
 def main():
     cpu = CPU()     # Create the CPU object
 
-    # # Test LDA
+    # Test LDA
     cpu.init_rom()
     cpu.reset()      # Reset must be called before any memory access
     cpu.mem[2] = 7   # Store data to load into Accumulator
