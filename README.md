@@ -8,7 +8,7 @@ simulators are helpful and when to use them. The articles use Python to present 
 in a way that is easily ported to other languages. 
 
 The articles strive to teach how to implement a full emulation stack. Providing examples
-of system emulators, small assemblers, interpreters and compiles. 
+of system emulators, small assemblers, interpreters and compilers. 
 
 All code for the project is licensed under the **GPL v2 or later**. In truth, I only care
 that you give conspicuous credit to me if you use this code/article texts. It would be nice
