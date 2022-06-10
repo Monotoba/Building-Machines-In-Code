@@ -15,7 +15,6 @@ that you give conspicuous credit to me if you use this code/article texts. It wo
 if you **linked to the articles** I have written as well. My passion is to share knowledge 
 and teach others interested in developing such applications.
 
-<p> Sincerely, <br>
 R. Morgan</p>
 
 
