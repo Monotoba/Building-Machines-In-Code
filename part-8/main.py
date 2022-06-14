@@ -29,7 +29,10 @@ __version__ = "1.0.0"
 from cpu import CPU
 from memory import Memory
 from bus import Bus
+from console import Console
 
+def dump(cpu: CPU):
+    print(f'ACC: {cpu.accumulator} PC: {cpu.program_counter} P: {cpu.p_flag} Z: {cpu.z_flag}')
 
 if __name__ == '__main__':
     # Instantiate System Bus Object
@@ -43,17 +46,28 @@ if __name__ == '__main__':
     # Register Memory on bus
     bus.register_handler(ram)
 
+    # Terminal
+    console = Console()
+    bus.register_handler(console)
+
     # Instantiate CPU and attach to bus
     cpu = CPU(bus)
 
-    # Program
-    cpu.write(0x0000, 0x1001)  # LDA (0x0001)
-    cpu.write(0x0001, 0x00FF)  # DATA
-    cpu.write(0x0002, 0x0000)  # HLT (HALT)
+    # Program Console Echo
+    cpu.write(0x0000, 0x1004)  # LDA (0x0004)
+    cpu.write(0x0001, 0xF0FF)  # OUT
+    cpu.write(0x0002, 0xE0FE)  # INP
+    cpu.write(0x0003, 0xB001)  # BRA 0x000
+    cpu.write(0x0004, 0x0041)  # DATA = 'A'
 
-    # Execute
-    cpu.step()  # LDA (0x0001)
-    cpu.step()  # DATA
-    cpu.step()  # HLT
-    cpu.step()  # No effect
-    cpu.step()  # No effect
+    # Run the program
+    cpu.run()
+    # cpu.step()
+    # dump(cpu)
+    # cpu.step()
+    # dump(cpu)
+    # cpu.step()
+    # dump(cpu)
+    # cpu.step()
+    # dump(cpu)
+

@@ -31,34 +31,31 @@ import sys
 from bus import BusClient
 
 
-class CommPort(BusClient):
+class Console(BusClient):
     BASE_ADDRESS = 0x00FE  # Read
-    MAX_ADDRESS = 0x00FF   # Write
-    INSTANCE = None
+    MAX_ADDRESS = 0x00FF  # Write
 
-    def __init__(self):
-        self.input_buffer = []
-        self.output_buffer = []
-        CommPort.INSTANCE = self
+    def __init__(self, base_address: int = None, max_address: int = None):
+        Console.BASE_ADDRESS = base_address if base_address is not None else 0x00FE
+        Console.MAX_ADDRESS = max_address if max_address is not None else 0x00FF
 
     @staticmethod
     def should_respond(address, is_io_request=False):
-        return CommPort.BASE_ADDRESS <= address <= CommPort.INSTANCE.MAX_ADDRESS
+        return Console.BASE_ADDRESS <= address <= Console.MAX_ADDRESS
 
     @staticmethod
-    def read(address):
-        if CommPort.INSTANCE.should_respond(address):
-                try:
-                    return sys.stdin.buffer.read(1)
-                except KeyboardInterrupt:
-                    pass
-
+    def read(address) -> int | None:
+        if Console.should_respond(address):
+            try:
+                return ord(sys.stdin.buffer.read(1))
+            except KeyboardInterrupt:
+                pass
         return None
 
     @staticmethod
     def write(address, data):
-        if CommPort.INSTANCE.should_respond(address):
-            #CommPort.INSTANCE.output_buffer.append(data)
+        if Console.should_respond(address):
+
             char = chr(data & 0xFF)
             try:
                 sys.stdout.write(char)
@@ -66,23 +63,10 @@ class CommPort(BusClient):
             except KeyboardInterrupt:
                 pass
 
-    @staticmethod
-    def write_char(char: int):
-        ch = chr(char)
-        CommPort.INSTANCE.input_buffer.append(ch)
-
-    def get_buffer_char(self) -> str:
-        if len(self.input_buffer):
-            return str(chr(self.input_buffer.pop()))
-        else:
-            return ''
-
-
 
 if __name__ == "__main__":
-    pass
-
-
-
-
-
+    console = Console()
+    # Read the terminal window
+    while True:
+        ch = console.read(0x00FE)
+        console.write(0x00FF, ch)

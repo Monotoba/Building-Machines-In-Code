@@ -26,6 +26,8 @@ __maintainer__ = "Randall Morgan"
 __status__ = "Production"
 __version__ = "1.0.0"
 
+import time
+
 from bus import Bus
 
 class CPU:
@@ -83,9 +85,10 @@ class CPU:
     def run(self):
         while self.active:
             self.step()
+            #time.sleep(0.02)
 
     def execute(self, opcode, operand):
-        match opcode:
+        match (opcode):
             case 0x0:
                 self.__impl_halt()
             case 0x1:
@@ -184,11 +187,12 @@ class CPU:
         # be interpreted as a memory address space
         # operation.
         self.bus.set_io_request()
-        ch = self.bus_read(0xFE)
+        b = (self.bus_read(0xFE) & 0xFF).to_bytes(1)
+        ch = ord(b)
         self.set_accumulator(ch)
         self.bus.clear_io_request()
 
-    def __impl_output(self, operand: int):
+    def __impl_output(self, operand: bytes):
         # IO operations must set bus io request flag
         # or the following read/write operations will
         # be interpreted as a memory address space
