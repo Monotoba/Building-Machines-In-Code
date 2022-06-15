@@ -1,7 +1,7 @@
 # Building Machines In Code
 ### Creating Digital Systems Emmulators and Simulators
 Source code to accompany the article series Building Machines in Code 
-Creating Digital Systems Emulators and Simulators on [http://www.coderancher](https://www.plantation-productions.com/Webster/RollYourOwn/index.html).
+Creating Digital Systems Emulators and Simulators on [http://www.coderancher.us].
 
 The blog series **"Building Machines In Code"** walks the user through why emulators and 
 simulators are helpful and when to use them. The articles use Python to present code
