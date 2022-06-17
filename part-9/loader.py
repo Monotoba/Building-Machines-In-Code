@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" Tiny-P CPU Simulator.
-Tiny-P is a simple CPU Simulator intended as a teaching aid for students
+""" Tiny-T CPU Simulator.
+Tiny-T is a simple CPU Simulator intended as a teaching aid for students
 learning about computer architecture.
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -20,23 +20,27 @@ __copyright__ = "Copyright 2022, SensorNet"
 __credits__ = ["Randall Morgan", "SensorNet.Us"]
 __date__ = "2022/05/23"
 __deprecated__ = False
-__email__ =  "rmorgan@coderancher.us"
+__email__ = "rmorgan@coderancher.us"
 __license__ = "GPLv2 or Later"
 __maintainer__ = "Randall Morgan"
 __status__ = "Production"
 __version__ = "1.0.0"
 
-# Tiny-P Machine Code Loader
+# Tiny-T Machine Code Loader
 # Assumes machine code is stored in
 # a *.bin file and is formatted as:
 # <address> <opcode>
-# Where the address is a 3-digit decimal
-# value and the opcode is a 3-digit
+# Where the address is a 4-digit decimal
+# value and the opcode is a 4-digit
 # decimal value.
 
-import sys, getopt
+import getopt
+import sys
 
+from bus import Bus
+from console import Console
 from cpu import CPU
+from memory import Memory
 
 
 class Loader:
@@ -45,17 +49,25 @@ class Loader:
         self.code = self.machine_code.split('\n')
         self.cpu = cpu
 
-    def cpu_init(self):
-        self.cpu.init_rom()
-        self.cpu.reset()
-
     def load(self):
         for line in self.code:
             code = line.split()
             if len(code) == 2:
                 addr = int(code[0])
                 opcode = int(code[1])
-                self.cpu.program(addr, opcode)
+                self.cpu.write(addr, opcode)
+
+
+def dump(cpu: CPU):
+    print(f"ACC: {cpu.accumulator}, PC: {cpu.program_counter}, Z: {cpu.z_flag}, P: {cpu.p_flag}")
+    print('\n')
+
+
+def dump_mem(mem: list):
+    for i, data in enumerate(mem):
+        if i % 16 == 0: print(f"\n{i} : ", end='')
+        print(f" {data}, ", end='')
+    print()
 
 
 def main(argv):
@@ -82,10 +94,16 @@ def main(argv):
         program_text = ifh.read()
     ifh.close()
 
-    # Loader program
-    cpu = CPU()
+    # Build up Computer Stem
+    ram = Memory(64, 16)
+    con = Console()
+    bus = Bus()
+    bus.register_handler(ram)
+    bus.register_handler(con)
+    cpu = CPU(bus)
+
+    # Loader Program
     loader = Loader(cpu, program_text)
-    loader.cpu_init()
     loader.load()
 
     # Exit message
@@ -93,26 +111,7 @@ def main(argv):
     print(f"Ready to run!")
 
     # Run the program
-    cpu.step()
-    dump(cpu)
-    cpu.step()
-    dump(cpu)
-    cpu.step()
-    dump(cpu)
-
-
-def dump(cpu: CPU):
-    print(f"ACC: {cpu.acc}, PC: {cpu.pc}, Z: {cpu.zero_flag}, P: {cpu.pos_flag}")
-    dump_mem(cpu.mem)
-    print()
-    dump_mem(cpu.prog)
-    print('\n')
-
-
-def dump_mem(mem: list):
-    for i, data in enumerate(mem):
-        if i % 15 == 0: print(f"\n{i} : ", end='')
-        print(f" {data}, ", end='')
+    cpu.run()
 
 
 if __name__ == "__main__":
