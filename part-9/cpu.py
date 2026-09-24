@@ -162,11 +162,11 @@ class CPU:
         self.set_accumulator(result)
 
     def __impl_shift_left(self):
-        result = self.accumulator >> 1
+        result = self.accumulator << 1
         self.set_accumulator(result)
 
     def __impl_shift_right(self):
-        result = self.accumulator << 1
+        result = self.accumulator >> 1
         self.set_accumulator(result)
 
     def __impl_branch_always(self, operand: int):

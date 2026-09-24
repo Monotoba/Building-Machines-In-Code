@@ -50,6 +50,7 @@ __version__ = "1.0.0"
 
 import getopt
 import sys
+from pathlib import Path
 
 
 class Disassembler:
@@ -74,7 +75,7 @@ class Disassembler:
         return f'\t {mnemonic} 0x{operand:X}'
 
     INSTR = [
-        'htl',
+        'hlt',
         'lda',
         'sta',
         'add',
@@ -99,7 +100,7 @@ def main(argv):
     usage_message = "Usage: assembler.py -i <inputfile> -o <outputfile>"
 
     try:
-        opts, args = getopt.getopt(argv, "hi:0:", ["help", "ifile=", "ofile="])
+        opts, args = getopt.getopt(argv, "hi:o:", ["help", "ifile=", "ofile="])
     except getopt.GetoptError:
         print(usage_message)
         sys.exit(2)
@@ -119,7 +120,7 @@ def main(argv):
 
     # If only input file given default output file to <inputfile>.bin
     if inputfile and not outputfile:
-        outputfile = inputfile.split('.')[0] + '.asm_'
+        outputfile = str(Path(inputfile).with_suffix('.disasm'))
 
     with open(inputfile, 'r') as ifh:
         program_code = ifh.read()

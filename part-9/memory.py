@@ -43,7 +43,7 @@ class Memory(BusClient):
         self.read_only = read_only
         Memory.bit_mask = (1 << bit_width) - 1
         Memory.start_address = 0
-        Memory.end_address = Memory.start_address + size
+        Memory.end_address = Memory.start_address + size - 1
         self.clear()
 
     def clear(self):
@@ -57,26 +57,24 @@ class Memory(BusClient):
 
     def set_location(self, start_address: int):
         Memory.start_address = start_address
-        Memory.end_address = Memory.start_address + self.size
+        Memory.end_address = Memory.start_address + self.size - 1
 
     @staticmethod
     def should_respond(address, is_io_request=False) -> bool:
-        if Memory.start_address <= address <= Memory.end_address and not is_io_request:
-            return True
-        return False
+        return Memory.start_address <= address <= Memory.end_address and not is_io_request
 
     @staticmethod
     def read(address: int):
         # Note during a cpu read cycle the ram puts data on the data bus
         try:
-            return Memory.mem[address]
+            return Memory.mem[address - Memory.start_address]
         except IndexError:
-            ValueError('Address out of range or Memory not initialized')
+            raise ValueError('Address out of range or Memory not initialized')
 
     @staticmethod
     def write(address: int, data: int):
         # during a cpu write cycle the ram accepts data from the data bus
-        Memory.mem[address] = (data & Memory.bit_mask)
+        Memory.mem[address - Memory.start_address] = data & Memory.bit_mask
 
     def dump(self, start_addr: int, end_addr: int) -> str:
         rep = 'Memory Dump:\n'

@@ -52,7 +52,7 @@ __version__ = "1.0.0"
 # Opcode table relates mnemonics
 # to the corresponding opcode value.
 OPCODE_TABLE = {
-    'htl': 0x0,
+    'hlt': 0x0,
     'lda': 0x1,
     'sta': 0x2,
     'add': 0x3,
@@ -69,6 +69,8 @@ OPCODE_TABLE = {
     'inp': 0xE,
     'out': 0xF
 }
+
+NO_OPERAND_INSTRUCTIONS = {'hlt', 'not', 'shl', 'shr'}
 
 
 class Lexer:
@@ -128,10 +130,10 @@ class Assembler:
         text_ = ''
         for line in self.code:
             parts = line.split(':')
-            addr = parts[0]
+            addr = parts[0].strip()
             sub_parts = parts[1].split('-')
-            opcode = sub_parts[0]
-            operand = sub_parts[1]
+            opcode = sub_parts[0].strip()
+            operand = sub_parts[1].strip()
 
             if operand.isalnum() and not operand.isnumeric() and not self.is_hex(operand):
                 if operand in self.symbol_table:
@@ -199,7 +201,11 @@ class Assembler:
                     # INSTRUCTION
                     self.opcode = OPCODE_TABLE[tok]
                     operand = self.lexer.next_token()
-                    if operand.isnumeric():
+                    if tok in NO_OPERAND_INSTRUCTIONS:
+                        self.operand = 0
+                    elif operand is None:
+                        raise ValueError(f'Missing operand for {tok.upper()}')
+                    elif operand.isnumeric():
                         self.operand = operand
 
                     elif self.is_hex(operand):
@@ -230,6 +236,7 @@ class Assembler:
 
 import getopt
 import sys
+from pathlib import Path
 
 
 def main(argv):
@@ -238,7 +245,7 @@ def main(argv):
     usage_message = "Usage: assembler.py -i <inputfile> -o <outputfile>"
 
     try:
-        opts, args = getopt.getopt(argv, "hi:0:", ["help", "ifile=", "ofile="])
+        opts, args = getopt.getopt(argv, "hi:o:", ["help", "ifile=", "ofile="])
     except getopt.GetoptError:
         print(usage_message)
         sys.exit(2)
@@ -258,7 +265,7 @@ def main(argv):
 
     # If only input file given default output file to <inputfile>.bin
     if inputfile and not outputfile:
-        outputfile = inputfile.split('.')[0] + '.bin'
+        outputfile = str(Path(inputfile).with_suffix('.bin'))
 
     with open(inputfile, 'r') as ifh:
         program_text = ifh.read()
