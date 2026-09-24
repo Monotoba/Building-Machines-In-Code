@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: BSD-2-Clause
 """ Tiny-T CPU Simulator.
 Tiny-T is a simple CPU Simulator intended as a teaching aid for students
 learning about computer architecture.
-This program is free software: you can redistribute it and/or modify it under
-the Terminals of the GNU General Public License as published by the Free Software
-Foundation, either version 2 of the License, or (at your option) any later
-version.
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR ANY PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <http://www.gnu.org/licenses/>.
+Released under the BSD 2-Clause License. See the repository LICENSE file.
+Copyright and attribution notices must be retained in redistributions.
 """
 
 __author__ = "Randall Morgan"
@@ -21,9 +15,9 @@ __credits__ = ["Randall Morgan", "SensorNet.Us"]
 __date__ = "2022/06/08"
 __deprecated__ = False
 __email__ = "rmorgan@coderancher.us"
-__license__ = "GPLv2 or Later"
+__license__ = "BSD-2-Clause"
 __maintainer__ = "Randall Morgan"
-__status__ = "Production"
+__status__ = "Educational"
 __version__ = "1.0.0"
 
 import sys

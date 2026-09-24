@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: BSD-2-Clause
 # Building Machines In Code - Part 4
 # Tiny-P Programming Exercise 6
 #
